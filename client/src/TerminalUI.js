@@ -1,23 +1,34 @@
 // TerminalUI.js
 
 import { Terminal } from "xterm";
-import { FitAddon } from 'xterm-addon-fit';
 
+import { FitAddon } from 'xterm-addon-fit';
 
 import "xterm/css/xterm.css";
 
 export class TerminalUI {
   constructor(socket) {
+
+
     this.terminal = new Terminal({
       theme: {
-        background: "black",
-        foreground: "#F5F8FA"
+        foreground: "white", //字体
+        background: "black", //背景色
+        cursor: "help", //设置光标
+        lineHeight: 16
       },
 
+      rendererType: "canvas",
+      cursorBlink: true,
+      cursorStyle: 'underline',
+      convertEol: true,
+      cols: 100
+
     });
-
-
+    this.fitAddon= new FitAddon();
     this.socket = socket;
+
+
   }
 
   /**
@@ -66,19 +77,32 @@ export class TerminalUI {
    * @param {HTMLElement} container HTMLElement where xterm can attach terminal ui instance.
    */
   attachTo(container) {
-    let fitAddon = new FitAddon();
-    this.terminal.loadAddon(fitAddon);
+
+    this.terminal.loadAddon(this.fitAddon)
     this.terminal.open(container);
-    fitAddon.fit()
+    this.fitAddon.fit()
     // Default text to display on terminal.
     this.terminal.write("Terminal Connected");
     this.terminal.write("");
 
     this.prompt();
+    this.socket.on('connect', () => {
+      this.socket.emit('geometry', this.terminal.cols, this.terminal.rows);
+    });
+    window.addEventListener('resize', this.resizeScreen, false);
 
   }
 
   clear() {
     this.terminal.clear();
   }
+
+  resizeScreen() {
+    this.fitAddon.fit();
+    this.socket.emit('resize', { cols: this.terminal.cols, rows: this.terminal.rows });
+
+  }
+
+
+
 }

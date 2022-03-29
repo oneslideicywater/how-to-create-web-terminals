@@ -4,17 +4,33 @@
     <title>How to create web terminals</title>
     <meta charset="UTF-8" />
     <style>
-        #terminal-container{
-          position: absolute;
-          margin: 0;
-          padding: 0;
-          height: 100%;
-          width: 100%;
+
+        body {
+          font-family: sans-serif;
         }
+
+        #terminal-container {
+          display: block;
+          width: calc(100% - 1px);
+          margin: 0 auto;
+          padding: 2px;
+          height: calc(100% - 19px);
+        }
+        #terminal-container .terminal {
+          background-color: #000000;
+          color: #fafafa;
+          padding: 2px;
+          height: calc(100% - 19px);
+        }
+        #terminal-container .terminal:focus .terminal-cursor {
+          background-color: #fafafa;
+        }
+
     </style>
   </head>
 
   <body>
+
     <div id="terminal-container"></div>
     <script src="src/index.js"></script>
   </body>

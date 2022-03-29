@@ -28,7 +28,9 @@ class SocketService {
 
       // Create a new pty service when client connects.
       let pty = new PTYService(socket);
+
       pty.write("kubectl exec -it cicd-dev-metric-service-b85cc4cdd-zpcrm /bin/bash \r")
+
 
       // add <socket.id,pty> to map
       this.SocketBook.set(socket.id,pty)
@@ -40,6 +42,8 @@ class SocketService {
         let pty= this.SocketBook.get(socket.id)
         pty.write(input);
       });
+
+
     });
   }
 }
